@@ -1,0 +1,131 @@
+# README: Air Quality Analysis and Visualization in Melbourne  
+This repository contains Python scripts and data analysis for the evaluation and visualization of air quality trends in Melbourne. The purpose of this analysis is to investigate annual, monthly, weekly, and hourly patterns of key air pollutants: **NO₂, PM₂.₅, PM₁₀, and O₃**. The analysis is based on data from air quality monitoring stations in Melbourne, comparing these trends against international and national air quality standards, including **WHO guidelines and NEPM standards**.
+
+## Key Features of the Analysis
+- **Data Preparation**: 
+   - Load and process daily and hourly air quality datasets.
+   - Extract temporal patterns (year, month, day of the week, hour) for further analysis.
+   
+- **Descriptive Statistics**:
+   - Calculate and visualize mean and standard deviation for each pollutant across different time scales (annual, monthly, weekly, and hourly).
+   
+- **Visualization**:
+   - Use a **4x4 subplot** to visualize the temporal patterns for all pollutants at different time scales.
+   - Add air quality standard lines for visual comparison with WHO and NEPM standards.
+
+- **Custom Styling and Formatting**:
+   - Use **consistent color schemes** (`skyblue`) for all pollutants.
+   - Customize y-axis labels and ticks for clarity and readability.
+   - Add a **single legend** to represent WHO and NEPM standards.
+
+---
+
+## Description of the Python Script
+Here’s a detailed breakdown of the Python code and what each section does:
+
+### 1. **Loading and Preparing the Data**
+```python
+data = pd.read_csv(file_path)
+hourly_data = pd.read_csv(hourly_file_path)
+```
+- **Data Loading**: Reads daily and hourly air quality data from CSV files.
+- **Date Parsing**: Converts the `Datetime` column into a `datetime` format for easier extraction of temporal components (year, month, day of the week, hour).
+
+---
+
+### 2. **Extracting Temporal Information**
+```python
+data['Year'] = data['Datetime'].dt.year
+data['Month'] = data['Datetime'].dt.month
+data['DayOfWeek'] = data['Datetime'].dt.day_name()
+hourly_data['Hour'] = hourly_data['Datetime'].dt.hour
+```
+- **Year, Month, and Day of the Week**: Extracted from the `Datetime` column to analyze temporal patterns.
+- **Hour**: Extracted from hourly data for diurnal analysis.
+
+---
+
+### 3. **Calculating Descriptive Statistics**
+```python
+annual_stats = data.groupby('Year')[['NO2', 'PM2.5', 'PM10', 'O3']].agg(['mean', 'std'])
+```
+- **Group the data** by different time scales (`Year`, `Month`, `DayOfWeek`, `Hour`) and calculate the mean and standard deviation for each pollutant.
+
+---
+
+### 4. **Creating Subplots for Visualization**
+```python
+fig, axes = plt.subplots(4, 4, figsize=(22, 22))
+```
+- **Figure Layout**: A 4x4 grid with each row representing a different time scale (Annual, Monthly, Weekly, Hourly).
+- **Color Scheme**: `skyblue` used for bars, ensuring a clean and consistent look.
+
+### 5. **Plotting and Adding Air Quality Standards**
+```python
+ax.axhline(y=standards[pollutant]['WHO'], color='black', linestyle='--', linewidth=2)
+```
+- **Overlay Standard Lines**: WHO, NEPM, and state-specific air quality standards are plotted as dashed lines for visual comparison.
+
+---
+
+### 6. **Customizing Axes and Labels**
+```python
+ax.set_title(f'{titles[i]}', fontsize=20)
+ax.set_xlabel('Year', fontsize=20)
+ax.set_ylabel(f'{titles[i]} ({units[pollutant]})', fontsize=20)
+```
+- **Dynamic Titles and Labels**: Automatically updates titles, axes labels, and units for each pollutant.
+- **Customized Tick Intervals**: Adjusts the y-axis ticks for better readability, especially for PM₂.₅ and PM₁₀.
+
+---
+
+### 7. **Adding a Single Legend**
+```python
+handles = [plt.Line2D([0], [0], color='black', linestyle='--', linewidth=2, label='WHO')]
+fig.legend(handles=handles, loc='lower center', bbox_to_anchor=(0.5, -0.05), fontsize=20, ncol=4)
+```
+- **Centralized Legend**: Provides a clean and uncluttered figure by adding a single legend below the entire plot.
+
+---
+
+### 8. **Final Plot Layout and Display**
+```python
+plt.tight_layout(rect=[0, 0, 1, 0.96])
+plt.show()
+```
+- **Tight Layout**: Ensures subplots do not overlap.
+- **Display Plot**: Renders the plot for analysis.
+
+---
+
+## Example Output:
+The script generates a **4x4 grid** showing the following:
+1. **Annual Trends**: Changes in pollutant levels over the years.
+2. **Monthly Patterns**: Seasonal variations.
+3. **Weekly Patterns**: Differences between weekdays and weekends.
+4. **Hourly Patterns**: Diurnal trends, highlighting peak hours for each pollutant.
+
+---
+
+## Air Quality Standards Used
+- **WHO Guidelines**: 5 µg/m³ for PM₂.₅ (annual average), 15 µg/m³ for PM₁₀, 5 ppb for NO₂.
+- **NEPM Standards**: Varying thresholds for Victoria and New South Wales, detailed in the script.
+
+---
+
+## How to Reproduce the Analysis
+1. **Install Dependencies**: Ensure the following packages are installed:
+   ```
+   pandas
+   matplotlib
+   ```
+   Use `pip install pandas matplotlib` to install them.
+
+2. **Run the Script**: Execute the script using Python 3.x.
+
+3. **Data Input**: Ensure the input files (`Melb_Air Quality.csv` and `Melb_Hourly_Average_Air_Quality_02.csv`) are in the correct path specified in the script.
+
+---
+
+## Contact
+For any questions or issues, please feel free to contact me at [simonwilliam140293@gmail.com](mailto:simonwilliam140293@gmail.com).
